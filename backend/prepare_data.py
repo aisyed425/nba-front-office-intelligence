@@ -65,14 +65,13 @@ def main():
     for column in per_game_columns:
         df[f"{column}_per_game"] = (
             df[column] / df["gamesplayed"]
-        )
+        )uvicorn backend.main:app --reloadpwd
 
     # Convert percentage-style metrics to readable percentages.
     percentage_columns = [
         "tspct",
         "efgpct",
         "fg3pct",
-        "usage",
         "assisted3spct",
         "atrimfrequency",
         "corner3frequency",
