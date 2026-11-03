@@ -2,7 +2,7 @@
 AI powered NBA analytics platform that predicts player performance, simulates games, and analyzes trends. Work in progress :)
 
 ## Overview
-This model will (hopefully) be able to:
+This model will be able to:
 - Predict player performance
 - Analyze shot charts and shooting efficiency
 - Simulate NBA game outcomes using probabilistic models
