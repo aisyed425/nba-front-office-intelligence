@@ -115,12 +115,32 @@ nba-front-office-intelligence/
 │   ├── main.py
 │   ├── prepare_data.py
 │   └── requirements.txt
+├── frontend/
+│   ├── app/
+│   │   ├── page.tsx
+│   │   ├── layout.tsx
+│   │   └── globals.css
+│   ├── package.json
+│   └── ...
 ├── scripts/
 │   └── ingest_nba.py
 ├── data/
 │   └── processed/
-└── README.md
+│       ├── player_stats_2025_26.csv
+│       └── cleaned_player_stats_2025_26.csv
+├── README.md
+└── .gitignore
 ```
+
+### Architecture
+
+The platform follows a full-stack architecture that separates the user interface, API layer, and data processing pipeline.
+
+1. **Frontend:** Next.js and React provide the interactive dashboard and user interface.
+2. **Backend:** FastAPI exposes REST endpoints for player statistics, searches, comparisons, and analytical queries.
+3. **Data Processing:** Python and Pandas handle NBA dataset ingestion, cleaning, preprocessing, and feature engineering.
+4. **Analytics and Machine Learning:** Statistical analysis and machine learning models will power player evaluation, similarity analysis, and performance predictions.
+5. **AI Integration:** Future AI capabilities will provide natural-language access to basketball statistics and scouting insights.
 
 ## Getting Started
 
