@@ -79,23 +79,34 @@ A full-stack NBA analytics platform that combines statistical analysis, machine 
 ## Development Progress
 
 ### Completed
-- [x] NBA player statistics ingestion.
-- [x] Data cleaning and preprocessing.
-- [x] FastAPI backend setup.
-- [x] Player search and filtering.
-- [x] Individual player lookup.
-- [x] Statistical leaderboard endpoints.
+
+- NBA player statistics ingestion and dataset processing.
+- Data cleaning, preprocessing, and feature engineering.
+- FastAPI backend architecture and REST API development.
+- Player search, filtering, and individual player lookup endpoints.
+- Player comparison API.
+- Statistical leaderboard endpoints.
+- Next.js frontend application setup.
+- Responsive NBA analytics dashboard interface.
+- Frontend-to-backend API integration.
+- Dynamic Top Scorers leaderboard.
+- Player scoring distribution visualization.
+
+### In Progress
+
+- Dynamic dashboard KPI cards.
+- Advanced player analytics interface.
+- Interactive player comparison interface.
 
 ### Upcoming
-- [ ] Player comparison API.
-- [ ] Advanced player analytics.
-- [ ] Interactive frontend dashboard.
-- [ ] Shot chart visualization.
-- [ ] Player performance prediction models.
-- [ ] Player similarity and archetype models.
-- [ ] NBA game simulation.
-- [ ] AI-powered scouting assistant.
 
+- Advanced statistical analysis and visualization.
+- Shot chart analysis and shooting efficiency breakdowns.
+- Player similarity using statistical feature engineering.
+- Player archetype discovery using machine learning clustering.
+- Player performance prediction models.
+- Probabilistic NBA game simulations.
+- AI-powered scouting assistant with natural-language queries.
 ## Project Structure
 
 ```text
