@@ -1,11 +1,11 @@
+"use client";
 
-const players = [
-  { rank: 1, name: "Luka Dončić", team: "LAL", ppg: 33.5, rpg: 7.7, apg: 8.3, ts: "61.6%" },
-  { rank: 2, name: "Shai Gilgeous-Alexander", team: "OKC", ppg: 31.1, rpg: 4.3, apg: 6.6, ts: "66.4%" },
-  { rank: 3, name: "Giannis Antetokounmpo", team: "MIL", ppg: 30.4, rpg: 11.9, apg: 6.5, ts: "64.2%" },
-  { rank: 4, name: "Nikola Jokić", team: "DEN", ppg: 29.6, rpg: 12.8, apg: 10.2, ts: "66.8%" },
-  { rank: 5, name: "Jayson Tatum", team: "BOS", ppg: 27.8, rpg: 8.7, apg: 5.6, ts: "60.1%" },
-];
+import { useEffect, useState } from "react";
+type Player = {
+  name: string;
+  teamabbreviation: string;
+  points_per_game: number;
+};
 
 const navItems = [
   { icon: "▦", label: "Overview", active: true },
@@ -42,6 +42,35 @@ function MetricCard({
 }
 
 export default function Home() {
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadPlayers() {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/analytics/leaderboards?category=points_per_game&limit=5`
+        );
+
+        if (!response.ok) {
+          throw new Error(`API request failed: ${response.status}`);
+        }
+
+        const data: Player[] = await response.json();
+        setPlayers(data);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Unable to load players"
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadPlayers();
+  }, []);
+
   return (
     <main className="min-h-screen bg-[#0a1020] text-slate-200">
       <div className="flex min-h-screen">
@@ -146,30 +175,25 @@ export default function Home() {
                 <div className="mt-6 overflow-x-auto">
                   <table className="w-full min-w-[570px] text-left text-sm">
                     <thead>
-                      <tr className="border-b border-white/[0.07] text-xs text-slate-500">
-                        <th className="pb-3 font-medium">RANK</th>
-                        <th className="pb-3 font-medium">PLAYER</th>
-                        <th className="pb-3 font-medium">PPG</th>
-                        <th className="pb-3 font-medium">RPG</th>
-                        <th className="pb-3 font-medium">APG</th>
-                        <th className="pb-3 font-medium">TS%</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {players.map((player) => (
-                        <tr key={player.rank} className="border-b border-white/[0.05] last:border-0">
-                          <td className="py-4 text-slate-500">#{player.rank}</td>
-                          <td className="py-4">
-                            <div className="font-medium text-white">{player.name}</div>
-                            <div className="mt-1 text-xs text-slate-500">{player.team}</div>
-                          </td>
-                          <td className="py-4 font-semibold text-blue-400">{player.ppg.toFixed(1)}</td>
-                          <td className="py-4 text-slate-300">{player.rpg.toFixed(1)}</td>
-                          <td className="py-4 text-slate-300">{player.apg.toFixed(1)}</td>
-                          <td className="py-4 text-slate-300">{player.ts}</td>
-                        </tr>
-                      ))}
-                    </tbody>
+  <tr className="border-b border-white/[0.07] text-xs text-slate-500">
+    <th className="pb-3 font-medium">RANK</th>
+    <th className="pb-3 font-medium">PLAYER</th>
+    <th className="pb-3 font-medium">TEAM</th>
+    <th className="pb-3 font-medium">PPG</th>
+  </tr>
+</thead>
+                   <tbody>
+  {players.map((player, index) => (
+    <tr key={player.name} className="border-b border-white/[0.05] last:border-0">
+      <td className="py-4 text-slate-500">#{index + 1}</td>
+      <td className="py-4 font-medium text-white">{player.name}</td>
+      <td className="py-4 text-slate-400">{player.teamabbreviation}</td>
+      <td className="py-4 font-semibold text-blue-400">
+        {player.points_per_game.toFixed(1)}
+      </td>
+    </tr>
+  ))}
+</tbody>
                   </table>
                 </div>
               </div>
@@ -181,19 +205,24 @@ export default function Home() {
                 </p>
                 <div className="mt-7 space-y-5">
                   {players.map((player) => (
-                    <div key={player.rank}>
-                      <div className="mb-2 flex justify-between text-xs">
-                        <span className="text-slate-300">{player.name}</span>
-                        <span className="font-semibold text-white">{player.ppg.toFixed(1)}</span>
-                      </div>
-                      <div className="h-2 overflow-hidden rounded-full bg-slate-700/70">
-                        <div
-                          className="h-full rounded-full bg-blue-500"
-                          style={{ width: `${(player.ppg / 35) * 100}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
+  <div key={player.name}>
+    <div className="mb-2 flex justify-between text-xs">
+      <span className="text-slate-300">{player.name}</span>
+      <span className="font-semibold text-white">
+        {player.points_per_game.toFixed(1)}
+      </span>
+    </div>
+
+    <div className="h-2 overflow-hidden rounded-full bg-slate-700/70">
+      <div
+        className="h-full rounded-full bg-blue-500"
+        style={{
+          width: `${(player.points_per_game / 35) * 100}%`,
+        }}
+      />
+    </div>
+  </div>
+))}
                 </div>
               </div>
             </div>
