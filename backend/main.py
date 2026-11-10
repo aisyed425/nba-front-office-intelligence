@@ -231,3 +231,46 @@ def get_leaderboard(
     return clean_records(
         df[["name", "teamabbreviation", category]]
     )
+
+
+@app.get("/analytics/overview")
+def get_overview():
+    qualified_players = players_df[players_df["gamesplayed"] > 0]
+
+    if qualified_players.empty:
+        raise HTTPException(
+            status_code=404,
+            detail="No player data available"
+        )
+
+    points_leader = qualified_players.loc[
+        qualified_players["points_per_game"].idxmax()
+    ]
+
+    rebounds_leader = qualified_players.loc[
+        qualified_players["rebounds_per_game"].idxmax()
+    ]
+
+    assists_leader = qualified_players.loc[
+        qualified_players["assists_per_game"].idxmax()
+    ]
+
+    return {
+        "players_tracked": int(len(qualified_players)),
+        "points_leader": {
+            "name": points_leader["name"],
+            "team": points_leader["teamabbreviation"],
+            "value": round(float(points_leader["points_per_game"]), 1)
+        },
+        "rebounds_leader": {
+            "name": rebounds_leader["name"],
+            "team": rebounds_leader["teamabbreviation"],
+            "value": round(float(rebounds_leader["rebounds_per_game"]), 1)
+        },
+        "assists_leader": {
+            "name": assists_leader["name"],
+            "team": assists_leader["teamabbreviation"],
+            "value": round(float(assists_leader["assists_per_game"]), 1)
+        }
+    }
+
