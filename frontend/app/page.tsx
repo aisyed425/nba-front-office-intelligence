@@ -6,6 +6,24 @@ type Player = {
   teamabbreviation: string;
   points_per_game: number;
 };
+type Overview = {
+  players_tracked: number;
+  points_leader: {
+    name: string;
+    team: string;
+    value: number;
+  };
+  rebounds_leader: {
+    name: string;
+    team: string;
+    value: number;
+  };
+  assists_leader: {
+    name: string;
+    team: string;
+    value: number;
+  };
+};
 
 const navItems = [
   { icon: "▦", label: "Overview", active: true },
@@ -45,6 +63,7 @@ export default function Home() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [overview, setOverview] = useState<Overview | null>(null);
 
   useEffect(() => {
     async function loadPlayers() {
@@ -67,8 +86,26 @@ export default function Home() {
         setLoading(false);
       }
     }
+    async function loadOverview() {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/analytics/overview`
+    );
 
+    if (!response.ok) {
+      throw new Error(`Overview API failed: ${response.status}`);
+    }
+
+    const data: Overview = await response.json();
+    setOverview(data);
+  } catch (err) {
+    setError(
+      err instanceof Error ? err.message : "Unable to load overview"
+    );
+  }
+}
     loadPlayers();
+loadOverview();
   }, []);
 
   return (
@@ -146,17 +183,40 @@ export default function Home() {
                   A data-driven view of the NBA landscape.
                 </p>
               </div>
-              <span className="rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs text-amber-300">
-                Preview · Sample UI data
-              </span>
+              <span className="rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-3 py-2 text-xs text-emerald-300">
+  {overview ? "Live API Data" : "Connecting to API..."}
+</span>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <MetricCard label="Players Tracked" value="500" change="Dataset" description="Players in the current dataset" />
-              <MetricCard label="League Leader · PPG" value="33.5" change="Luka Dončić" description="Points per game" />
-              <MetricCard label="League Leader · RPG" value="12.8" change="Nikola Jokić" description="Rebounds per game" />
-              <MetricCard label="League Leader · APG" value="10.2" change="Nikola Jokić" description="Assists per game" />
-            </div>
+  <MetricCard
+    label="Players Tracked"
+    value={overview ? overview.players_tracked.toString() : "—"}
+    change="Dataset"
+    description="Players in the current dataset"
+  />
+
+  <MetricCard
+    label="League Leader · PPG"
+    value={overview ? overview.points_leader.value.toFixed(1) : "—"}
+    change={overview ? overview.points_leader.name : "Loading..."}
+    description="Points per game"
+  />
+
+  <MetricCard
+    label="League Leader · RPG"
+    value={overview ? overview.rebounds_leader.value.toFixed(1) : "—"}
+    change={overview ? overview.rebounds_leader.name : "Loading..."}
+    description="Rebounds per game"
+  />
+
+  <MetricCard
+    label="League Leader · APG"
+    value={overview ? overview.assists_leader.value.toFixed(1) : "—"}
+    change={overview ? overview.assists_leader.name : "Loading..."}
+    description="Assists per game"
+  />
+</div>
 
             <div className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
               <div className="rounded-xl border border-white/[0.07] bg-[#111b2c] p-5">
@@ -201,7 +261,7 @@ export default function Home() {
               <div className="rounded-xl border border-white/[0.07] bg-[#111b2c] p-5">
                 <h3 className="font-semibold text-white">Scoring Distribution</h3>
                 <p className="mt-1 text-xs text-slate-500">
-                  Illustrative points-per-game comparison
+                  Live points-per-game comparison
                 </p>
                 <div className="mt-7 space-y-5">
                   {players.map((player) => (
