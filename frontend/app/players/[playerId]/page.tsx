@@ -4,6 +4,15 @@
 import { Suspense, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 type Player = {
   entityid: number;
   name: string;
@@ -144,6 +153,12 @@ function PlayerProfileContent() {
     { label: "Usage Rate", value: formatPercent(player.usage) },
   ];
 
+  const productionData = [
+  { category: "Points", value: player.points_per_game },
+  { category: "Rebounds", value: player.rebounds_per_game },
+  { category: "Assists", value: player.assists_per_game },
+  ];
+
   return (
     <main className="min-h-screen bg-[#0a1020] p-6 text-white md:p-10">
       <div className="mx-auto max-w-6xl">
@@ -199,7 +214,37 @@ function PlayerProfileContent() {
             ))}
           </div>
         </section>
+        <section className="mb-8 rounded-xl border border-slate-800 bg-[#111b2c] p-6">
+  <h2 className="mb-4 text-xl font-semibold">
+    Player Production
+  </h2>
 
+  <div className="h-80 w-full">
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart
+        data={productionData}
+        margin={{ top: 10, right: 20, left: 0, bottom: 5 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+        <XAxis dataKey="category" stroke="#94a3b8" />
+        <YAxis stroke="#94a3b8" />
+        <Tooltip
+          contentStyle={{
+            backgroundColor: "#0f172a",
+            border: "1px solid #334155",
+            borderRadius: "8px",
+            color: "#fff",
+          }}
+        />
+        <Bar
+          dataKey="value"
+          fill="#3b82f6"
+          radius={[6, 6, 0, 0]}
+        />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+</section>
         <section className="mb-8">
           <h2 className="mb-4 text-xl font-semibold">
             Shooting and Advanced Statistics
