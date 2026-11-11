@@ -86,11 +86,14 @@ def get_players(
             )
         ]
 
-    # Filter players by team
+   # Filter players by team (partial matching)
     if team:
         df = df[
-            df["teamabbreviation"].str.upper()
-            == team.upper()
+            df["teamabbreviation"].str.contains(
+                team,
+                case=False,
+                na=False
+        )
         ]
 
     # Limit number of results
