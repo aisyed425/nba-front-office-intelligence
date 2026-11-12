@@ -71,7 +71,7 @@ A full-stack NBA analytics platform that combines statistical analysis, machine 
 
 ## Data Sources
 
-- [NBA Stats API](https://github.com/swar/nba_api)
+- [NBA Stats API](https://github.com/swar/nba_api) Patel, S. nba_api: an API client for NBA.com [Computer software]. https://github.com/swar/nba_api
 - Basketball Reference datasets
 - Kaggle NBA datasets
 - Historical NBA player and team statistics
