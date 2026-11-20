@@ -159,6 +159,12 @@ function PlayerProfileContent() {
   { category: "Assists", value: player.assists_per_game },
   ];
 
+  const efficiencyData = [
+  { category: "3P%", value: player.fg3pct },
+  { category: "eFG%", value: player.efgpct },
+  { category: "TS%", value: player.tspct },
+];
+
   return (
     <main className="min-h-screen bg-[#0a1020] p-6 text-white md:p-10">
       <div className="mx-auto max-w-6xl">
@@ -236,6 +242,54 @@ function PlayerProfileContent() {
             color: "#fff",
           }}
         />
+        <Bar
+          dataKey="value"
+          fill="#3b82f6"
+          radius={[6, 6, 0, 0]}
+        />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+</section>
+<section className="mb-8 rounded-xl border border-slate-800 bg-[#111b2c] p-6">
+  <h2 className="mb-2 text-xl font-semibold">
+    Shooting Efficiency
+  </h2>
+
+  <p className="mb-6 text-sm text-slate-400">
+    Comparing three key measures of offensive shooting efficiency.
+  </p>
+
+  <div className="h-80 w-full">
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart
+        data={efficiencyData}
+        margin={{ top: 10, right: 20, left: 0, bottom: 5 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+
+        <XAxis dataKey="category" stroke="#94a3b8" />
+
+        <YAxis
+          stroke="#94a3b8"
+          domain={[0, 100]}
+          tickFormatter={(value) => `${value}%`}
+        />
+
+        <Tooltip
+          formatter={(value) =>
+            typeof value === "number"
+              ? `${value.toFixed(1)}%`
+              : value
+          }
+          contentStyle={{
+            backgroundColor: "#0f172a",
+            border: "1px solid #334155",
+            borderRadius: "8px",
+            color: "#fff",
+          }}
+        />
+
         <Bar
           dataKey="value"
           fill="#3b82f6"
