@@ -3,6 +3,7 @@
 **AI-powered NBA analytics platform for player evaluation, performance prediction, game simulation, and basketball intelligence.**
 
 Work in progress.
+Currently: Comparison page
 
 ## Overview
 
