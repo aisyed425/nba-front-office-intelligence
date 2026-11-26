@@ -1,6 +1,7 @@
 
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type Player = {
@@ -26,6 +27,15 @@ type ComparisonResponse = {
   };
 };
 
+function formatStat(value: number, isPercentage = false) {
+  if (isPercentage) {
+    const percentage = value > 1 ? value : value * 100;
+    return `${percentage.toFixed(1)}%`;
+  }
+
+  return value.toFixed(1);
+}
+
 export default function ComparePage() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +53,33 @@ const [showSuggestions2, setShowSuggestions2] = useState(false);
 const [comparison, setComparison] = useState<ComparisonResponse | null>(null);
 const [comparing, setComparing] = useState(false);
 const [compareError, setCompareError] = useState("");
+
+const statGroups = [
+  {
+    title: "Per-Game Production",
+    stats: [
+      { key: "points_per_game", label: "Points Per Game", percentage: false },
+      { key: "rebounds_per_game", label: "Rebounds Per Game", percentage: false },
+      { key: "assists_per_game", label: "Assists Per Game", percentage: false },
+      { key: "steals_per_game", label: "Steals Per Game", percentage: false },
+      { key: "blocks_per_game", label: "Blocks Per Game", percentage: false },
+    ],
+  },
+  {
+    title: "Shooting Efficiency",
+    stats: [
+      { key: "fg3pct", label: "Three-Point Percentage", percentage: true },
+      { key: "efgpct", label: "Effective Field Goal Percentage", percentage: true },
+      { key: "tspct", label: "True Shooting Percentage", percentage: true },
+    ],
+  },
+  {
+    title: "Advanced Statistics",
+    stats: [
+      { key: "usage", label: "Usage Rate", percentage: true },
+    ],
+  },
+];
 
 const filteredPlayers1 = players.filter((player) =>
   player.name.toLowerCase().includes(search1.toLowerCase())
@@ -134,6 +171,29 @@ async function handleCompare() {
           <p className="mt-2 text-slate-400">
             Compare NBA players across production, shooting, and performance.
           </p>
+
+          <nav className="mt-5 flex flex-wrap gap-3">
+  <Link
+    href="/"
+    className="rounded-lg px-4 py-2 text-sm text-slate-400 transition-colors hover:bg-white/[0.05] hover:text-white"
+  >
+    Overview
+  </Link>
+
+  <Link
+    href="/players"
+    className="rounded-lg px-4 py-2 text-sm text-slate-400 transition-colors hover:bg-white/[0.05] hover:text-white"
+  >
+    Player Analytics
+  </Link>
+
+  <Link
+    href="/compare"
+    className="rounded-lg bg-blue-500/15 px-4 py-2 text-sm font-medium text-blue-400"
+  >
+    Player Comparison
+  </Link>
+</nav>
         </div>
 
         {loading && (
@@ -276,9 +336,92 @@ async function handleCompare() {
               </p>
             )}
             {comparison && (
-  <p className="mt-4 text-center text-green-400">
-    Successfully compared {comparison.player1.name} and {comparison.player2.name}!
-  </p>
+  <div className="mt-12 space-y-8">
+    {/* Player Headers */}
+    <div className="grid grid-cols-2 gap-6">
+      <div className="rounded-xl border border-blue-500/30 bg-[#111b2c] p-6 text-center">
+        <p className="text-sm text-blue-400">
+          {comparison.player1.team}
+        </p>
+        <h2 className="mt-2 text-xl font-bold">
+          {comparison.player1.name}
+        </h2>
+      </div>
+
+      <div className="rounded-xl border border-slate-700 bg-[#111b2c] p-6 text-center">
+        <p className="text-sm text-slate-400">
+          {comparison.player2.team}
+        </p>
+        <h2 className="mt-2 text-xl font-bold">
+          {comparison.player2.name}
+        </h2>
+      </div>
+    </div>
+
+    {/* Statistical Comparisons */}
+    {statGroups.map((group) => (
+      <section
+        key={group.title}
+        className="rounded-xl border border-slate-800 bg-[#111b2c] p-6"
+      >
+        <h3 className="mb-6 text-lg font-semibold">
+          {group.title}
+        </h3>
+
+        <div className="space-y-6">
+          {group.stats.map((stat) => {
+            const values = comparison.comparison[stat.key];
+
+            if (!values) return null;
+
+            const firstLeads = values.player1 > values.player2;
+            const secondLeads = values.player2 > values.player1;
+
+            return (
+              <div key={stat.key}>
+                <p className="mb-2 text-center text-sm text-slate-400">
+                  {stat.label}
+                </p>
+
+                <div className="grid grid-cols-3 items-center gap-4">
+                  <p
+                    className={`text-right text-lg font-bold ${
+                      firstLeads ? "text-blue-400" : "text-white"
+                    }`}
+                  >
+                    {formatStat(values.player1, stat.percentage)}
+                  </p>
+
+                  <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+                    <div
+                      className="h-full rounded-full bg-blue-500"
+                      style={{
+                        width: `${
+                          Math.max(values.player1, values.player2) > 0
+                            ? (values.player1 /
+                                Math.max(values.player1, values.player2)) *
+                              100
+                            : 0
+                        }%`,
+                      }}
+                    />
+                  </div>
+
+                  <p
+                    className={`text-lg font-bold ${
+                      secondLeads ? "text-blue-400" : "text-white"
+                    }`}
+                  >
+                    {formatStat(values.player2, stat.percentage)}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    ))}
+  </div>
 )}
           </>
         )}

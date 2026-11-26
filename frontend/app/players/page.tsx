@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type Player = {
@@ -80,6 +81,28 @@ export default function PlayersPage() {
           <p className="mt-2 text-sm text-slate-400">
             Search, explore, and evaluate NBA players.
           </p>
+          <nav className="mt-5 flex flex-wrap gap-3">
+  <Link
+    href="/"
+    className="rounded-lg px-4 py-2 text-sm text-slate-400 transition-colors hover:bg-white/[0.05] hover:text-white"
+  >
+    Overview
+  </Link>
+
+  <Link
+    href="/players"
+    className="rounded-lg bg-blue-500/15 px-4 py-2 text-sm font-medium text-blue-400"
+  >
+    Player Analytics
+  </Link>
+
+  <Link
+    href="/compare"
+    className="rounded-lg px-4 py-2 text-sm text-slate-400 transition-colors hover:bg-white/[0.05] hover:text-white"
+  >
+    Player Comparison
+  </Link>
+</nav>
         </div>
       </header>
 

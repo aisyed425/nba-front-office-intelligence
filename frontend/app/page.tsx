@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 type Player = {
   name: string;
@@ -26,12 +27,12 @@ type Overview = {
 };
 
 const navItems = [
-  { icon: "▦", label: "Overview", active: true },
-  { icon: "◎", label: "Player Analytics" },
-  { icon: "⇄", label: "Player Comparison" },
-  { icon: "⌖", label: "Shot Charts" },
-  { icon: "◇", label: "Player Similarity" },
-  { icon: "⌁", label: "Predictions" },
+  { icon: "▦", label: "Overview", href: "/", active: true },
+  { icon: "◎", label: "Player Analytics", href: "/players" },
+  { icon: "⇄", label: "Player Comparison", href: "/compare" },
+  { icon: "⌖", label: "Shot Charts", href: "#" },
+  { icon: "◇", label: "Player Similarity", href: "#" },
+  { icon: "⌁", label: "Predictions", href: "#" },
 ];
 
 function MetricCard({
@@ -127,20 +128,21 @@ loadOverview();
           </p>
 
           <nav className="space-y-1">
-            {navItems.map((item) => (
-              <div
-                key={item.label}
-                className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm ${
-                  item.active
-                    ? "bg-blue-500/15 font-medium text-blue-400"
-                    : "text-slate-400 hover:bg-white/[0.04] hover:text-white"
-                }`}
-              >
-                <span className="w-5 text-center text-lg">{item.icon}</span>
-                {item.label}
-              </div>
-            ))}
-          </nav>
+  {navItems.map((item) => (
+    <Link
+      key={item.label}
+      href={item.href}
+      className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm ${
+        item.active
+          ? "bg-blue-500/15 font-medium text-blue-400"
+          : "text-slate-400 hover:bg-white/[0.04] hover:text-white"
+      }`}
+    >
+      <span className="w-5 text-center text-lg">{item.icon}</span>
+      {item.label}
+    </Link>
+  ))}
+</nav>
 
           <div className="mt-auto rounded-xl border border-white/[0.07] bg-[#111b2c] p-4">
             <p className="text-xs font-semibold text-white">NBA FRONT OFFICE AI</p>
